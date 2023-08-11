@@ -174,6 +174,7 @@ export default function ManageBookings({ navigation, route }) {
                                 console.log(
                                     "Document successfully updated! : Booking Approved!"
                                 );
+                                fetchFromDB();
                             } catch (error) {
                                 console.log(error);
                             }
@@ -203,6 +204,7 @@ export default function ManageBookings({ navigation, route }) {
                                 console.log(
                                     "Document successfully updated! : Booking Declined!"
                                 );
+                                fetchFromDB();
                             } catch (error) {
                                 console.log(error);
                             }
