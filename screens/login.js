@@ -8,8 +8,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginScreen = ({ navigation, route }) => {
-    const [email, setEmail] = useState('sahil@gbc.com');
-    const [password, setPassword] = useState('12345678');
+    const [email, setEmail] = useState('owner@email.com');
+    const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
         //verify the email and password are not empty
