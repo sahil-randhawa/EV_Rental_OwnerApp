@@ -1,117 +1,159 @@
-import { Text, View, StyleSheet, Platform, KeyboardAvoidingView } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import { StatusBar } from "expo-status-bar";
+import { Text, Image, View, ScrollView, ActivityIndicator, StyleSheet, Pressable, TextInput } from 'react-native';
+import { useState, useEffect } from 'react';
+import { FlatList } from 'react-native';
 
-import ManageBookings from "./manageBookings";
-import ListingSearch from "./listing";
-import CreateListing from "./createListing";
-import ProfileScreen from "./profileScreen";
+export default function ListingSearch({ navigation, route }) {
 
-import Icon from "react-native-vector-icons/FontAwesome";
+    const [listingData, setListingData] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+    const fetchDataFromAPI = async () => {
+        const apiURL = 'https://sahil-randhawa.github.io/react-native-project-api/vehicles.json';
 
-function ListingStack() {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="ListingSearch"
-                component={ListingSearch}
-                options={{
-                    headerTitle: "New Listing",
-                    headerTitleAlign: "center",
-                    headerStyle: {
-                        // backgroundColor: '#f4511e',
-                    },
+        const response = await fetch(apiURL);
+        try {
+            try {
+                const json = await response.json();
+                setListingData(json);
+            } catch (error) {
+                console.error(error);
+            }
+        } finally {
+            return setIsLoading(false);
+        }
+    };
 
-                    // disble back button
-                    headerLeft: null,
+    useEffect(() => {
+        fetchDataFromAPI();
+    }, []);
 
-                    // headerTintColor: '#f4511e',
-                    headerTitleStyle: {
-                        fontSize: 24,
-                    },
+
+    const renderItem = ({ item }) => (
+        <Pressable
+            style={{
+                flex: 1,
+                flexDirection: "row",
+                gap: 5,
+                backgroundColor: "white",
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+            }}
+            onPress={() => {
+                const selectedCar = {
+                    name: item.make + " " + item.model + " " + item.trim,
+                    price: item.msrp,
+                    seatingCapacity: item.seats_min,
+                    vehicleType: item.form_factor,
+                    range: item.electric_range,
+                    images: item.images,
+                    make: item.make,
+                    model: item.model,
+                };
+                // console.log("Car selected : ", selectedCar);
+                navigation.navigate("CreateListing", { selectedCar });
+            }}
+        >
+            <View
+                style={{
+                    // flex: 1,
+                    width: "40%",
                 }}
-            />
-            <Stack.Screen
-                name="CreateListing"
-                component={CreateListing}
-                options={{
-                    headerTitle: "Create Listing",
-                    headerTitleAlign: "center",
-                    headerStyle: {
-                        // backgroundColor: '#f4511e',
-                    },
-                    // headerTintColor: '#f4511e',
-                    headerTitleStyle: {
-                        fontSize: 24,
-                    },
-                }}
-            />
-        </Stack.Navigator>
-    );
-}
-
-export default function HomeScreen({ navigation, route }) {
-    return (
-        <View style={styles.container}>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === 'Listing') {
-                            iconName = focused ? "th-list" : "list";
-                        } else if (route.name === 'ManageBookings') {
-                            iconName = focused ? "bookmark" : "bookmark-o";
-                        } else if (route.name === 'Profile') {
-                            iconName = focused ? "user" : "user-o";
-                        }
-
-                        return <Icon name={iconName} size={size} color={color} />;
-                    },
-                    // tabBarActiveTintColor: "tomato",
-                    // tabBarInactiveTintColor: "gray",
-                    headerStyle: {
-                        // backgroundColor: '#f4511e',
-                    },
-                    //   headerTintColor: '#f4511e',
-                    headerTitleStyle: {
-                        fontSize: 24,
-                    },
-                })}
             >
-                <Tab.Screen
-                    name="Listing"
-                    component={ListingStack}
-                    options={{ headerShown: false }}
-                />
-                <Tab.Screen
-                    name="ManageBookings"
-                    component={ManageBookings}
-                    options={{
-                        headerTitle: "Manage Bookings",
-                        headerTitleAlign: "center",
+                <Image
+                    style={{
+                        height: 120,
+                        resizeMode: "contain",
+                        borderRadius: 10,
                     }}
+                    source={{ uri: item.images[0].url_thumbnail }}
                 />
-                <Tab.Screen
-                    name="Profile"
-                    component={ProfileScreen}
-                    options={{
-                        headerTitle: "Profile",
-                        headerTitleAlign: "center",
-                    }}
-                />
-            </Tab.Navigator>
+            </View>
+            <View style={styles.listItemDetails}>
+                <Text style={styles.vehicleTitle}>
+                    {item.make} {item.model} {item.trim}{" "}
+                </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.carDetailLabel}>MSRP:</Text>
+                        <Text>${item.msrp}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.carDetailLabel}>Range:</Text>
+                        <Text>{item.electric_range} KM</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.carDetailLabel}>Seating Capacity:</Text>
+                        <Text>{item.seats_min} seats</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.carDetailLabel}>Drivetrain:</Text>
+                        <Text>{item.drivetrain}</Text>
+                    </View>
+            </View>
+        </Pressable>
+    );
+
+    return (
+        <View style={{
+            flex: 1,
+            alignItems: 'center',
+            paddingHorizontal: 20,
+        }}>
+            <TextInput
+                style={styles.searchField}
+                placeholder="Search by make"
+                value={searchText}
+                onChangeText={(text) => setSearchText(text)}
+            />
+            <FlatList
+                style={{
+                    width: '100%',
+                }}
+                data={listingData.filter((item) => {
+                    return item.handle.toLowerCase().includes(searchText.toLowerCase());
+                })}
+                renderItem={renderItem}
+                keyExtractor={item => item.handle}
+                ItemSeparatorComponent={() => <View style={styles.separator}
+                />}
+            />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-        backgroundColor: "white",
+    searchField: {
+        fontSize: 20,
+        borderWidth: 1,
+        borderColor: 'gray',
+        width: '100%',
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    listItemDetails: {
+        // flex: 1,
+        flexDirection: 'column',
+        padding: 10,
+        gap: 5,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        width: '60%',
+    },
+    vehicleTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    carDetailLabel: {
+        fontWeight: '500',
+    },
+    separator: {
+        height: 5,
+        width: '100%',
+        // backgroundColor: '#CED0CE',
     },
 });

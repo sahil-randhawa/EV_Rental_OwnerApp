@@ -8,28 +8,28 @@ export default function ManageBookings({ navigation, route }) {
 
     const [bookings, setBookings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    // const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         fetchFromDB();
         // fetchUsersFromDB();
-    });
+    },[]);
 
-    // const fetchUsersFromDB = async () => {
-    //     try {
-    //         const q2 = query(collection(db, "users"));
-    //         const querySnapshot2 = await getDocs(q2);
-    //         const resultFromDB2 = [];
-    //         querySnapshot2.forEach((doc) => {
-    //             resultFromDB2.push(doc.data());
-    //         }
-    //         );
-    //         setUsers(resultFromDB2);
-    //         // console.log('setUsers from DB : ', users);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    const fetchUsersFromDB = async () => {
+        try {
+            const q2 = query(collection(db, "users"));
+            const querySnapshot2 = await getDocs(q2);
+            const resultFromDB2 = [];
+            querySnapshot2.forEach((doc) => {
+                resultFromDB2.push(doc.data());
+            }
+            );
+            setUsers(resultFromDB2);
+            // console.log('setUsers from DB : ', users);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const fetchFromDB = async () => {
         try {
@@ -41,6 +41,17 @@ export default function ManageBookings({ navigation, route }) {
             }
             );
             setBookings(resultFromDB);
+
+
+            const q2 = query(collection(db, "users"));
+            const querySnapshot2 = await getDocs(q2);
+            const resultFromDB2 = [];
+            querySnapshot2.forEach((doc) => {
+                resultFromDB2.push(doc.data());
+            }
+            );
+            setUsers(resultFromDB2);
+
 
             setIsLoading(false);
         } catch (error) {
@@ -73,12 +84,12 @@ export default function ManageBookings({ navigation, route }) {
                         fontWeight: "bold",
                     }}>Renter :</Text>
                     <Image
-                        // source={{ uri: users.find((user) => user.email === item.user).profile }}
-                        source={{ uri: item.renterPic }}
+                        source={{ uri: users.find((user) => user.email === item.user).profile }}
+                        // source={{ uri: item.renterPic }}
                         style={{ width: 80, height: 80, resizeMode: "cover", borderRadius: 40, marginVertical: 5 }}
                     />
-                    {/* <Text style={styles.renterText}>{users.find((user) => user.email === item.user).name}</Text> */}
-                    <Text style={styles.renterText}>{item.renterName}</Text>
+                    <Text style={styles.renterText}>{users.find((user) => user.email === item.user).name}</Text>
+                    {/* <Text style={styles.renterText}>{item.renterName}</Text> */}
                 </View>
             </View>
             {/* Date of booking */}

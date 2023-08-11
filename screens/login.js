@@ -64,6 +64,7 @@ const LoginScreen = ({ navigation, route }) => {
                 flex: 1,
             }}>
                 <View style={styles.container}>
+                <Text style={styles.headerText}>EV Owner Login 🚘🔑</Text>
                     <Text
                         style={styles.textLabel}
                     >Email:</Text>
@@ -100,8 +101,8 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     textLabel: {
-        fontWeight: 'bold',
-        fontSize: 24,
+        fontWeight: '500',
+        fontSize: 20,
         width: '80%',
         textAlign: 'left',
     },
@@ -110,7 +111,8 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         // backgroundColor: '#f0f0f0',
         padding: 15,
-        margin: 10,
+        marginTop: 5,
+        marginHorizontal: 10,
         width: '80%',
         borderRadius: 10,
         marginBottom: 10,
@@ -120,13 +122,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: 'bold',
+        color: '#068FFF',
     },
     loginPressable: {
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: '#068FFF',
         paddingVertical: 20,
         marginTop: 30,
         width: '80%',
         borderRadius: 10,
+    },
+    headerText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 30,
     }
 });

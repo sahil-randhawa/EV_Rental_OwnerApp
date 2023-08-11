@@ -12,19 +12,20 @@ export default function Splash({ navigation, route }) {
         <SafeAreaView style={style.container}>
             {/* logo image here */}
             <Image
-                // source={require("../assets/logo.png")}
-                source={{uri : "https://ui-avatars.com/api/?name=EV&background=068FFF&color=FFF&bold=true&size=248&rounded=true"}}
+                // source={{uri : "https://ui-avatars.com/api/?name=EV&background=068FFF&color=FFF&bold=true&size=248&rounded=true"}}
+                source={require("../assets/icon-splash.png")}
                 style={{
-                    width: 200,
+                    width: 300,
                     height: 200,
                     resizeMode: "contain",
-                    marginBottom: 20,
+                    // borderWidth: 1,
+                    // marginBottom: 20,
                 }}
             />
             <Text style={{
                 fontWeight: 'bold',
                 fontSize: 24,
-                marginBottom: 20,
+                marginBottom: 30,
             }}>Owner App</Text>
             <ActivityIndicator animating={true} size="large" />
         </SafeAreaView>
